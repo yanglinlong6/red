@@ -268,18 +268,19 @@ Red/System [
 ]
 
 #enum comparison-op! [
+	COMP_SAME
+	COMP_STRICT_EQUAL
+	COMP_STRICT_EQUAL_WORD		;-- same as STRICT_EQUAL, but relaxed type matching for words
+	COMP_FIND
 	COMP_EQUAL
 	COMP_NOT_EQUAL
-	COMP_STRICT_EQUAL
+	COMP_CASE_SORT
+	COMP_SORT
 	COMP_LESSER
 	COMP_LESSER_EQUAL
 	COMP_GREATER
 	COMP_GREATER_EQUAL
-	COMP_SORT
-	COMP_CASE_SORT
-	COMP_SAME
-	COMP_STRICT_EQUAL_WORD							;-- same as STRICT_EQUAL, but relaxed type matching for words
-	COMP_FIND
+	COMP_CASE:			16		;-- 10h, this flag can be ORed with other flags
 ]
 
 #enum exceptions! [
@@ -331,6 +332,7 @@ Red/System [
 #define FLAG_NOT?(s)		(s/flags and flag-bitset-not <> 0)
 #define SET_RETURN(value)	[stack/set-last as red-value! value]
 #define TO_ERROR(cat id)	[#in system/catalog/errors cat #in system/catalog/errors/cat id]
+#define COMPARE_OP(op)		[op and 15]
 
 #define PLATFORM_TO_CSTR(cstr str len) [	;-- len in bytes
 	len: -1

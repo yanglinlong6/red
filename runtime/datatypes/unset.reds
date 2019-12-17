@@ -110,6 +110,7 @@ unset: context [
 
 		type: TYPE_OF(arg2)
 		if type <> TYPE_UNSET [RETURN_COMPARE_OTHER]
+		op: COMPARE_OP(op)
 		switch op [
 			COMP_EQUAL 
 			COMP_SAME

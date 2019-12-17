@@ -870,10 +870,11 @@ vector: context [
 			vec1/node = vec2/node
 			vec1/head = vec2/head
 		]
+		op: COMPARE_OP(op)
 		if op = COMP_SAME [return either same? [0][-1]]
 		if all [
 			same?
-			any [op = COMP_EQUAL op = COMP_FIND op = COMP_STRICT_EQUAL op = COMP_NOT_EQUAL]
+			op <= COMP_NOT_EQUAL
 		][return 0]
 		
 		s1: GET_BUFFER(vec1)
@@ -886,9 +887,7 @@ vector: context [
 		end: as byte-ptr! s2/tail
 
 		either len1 <> len2 [							;-- shortcut exit for different sizes
-			if any [
-				op = COMP_EQUAL op = COMP_FIND op = COMP_STRICT_EQUAL op = COMP_NOT_EQUAL
-			][return 1]
+			if op <= COMP_NOT_EQUAL [return 1]
 
 			if len2 > len1 [
 				end: end - (len2 - len1 << (log-b unit2))

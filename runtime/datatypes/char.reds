@@ -169,6 +169,7 @@ char: context [
 	][
 		#if debug? = yes [if verbose > 0 [print-line "char/compare"]]
 
+		op: COMPARE_OP(op)
 		if all [
 			any [op = COMP_FIND op = COMP_STRICT_EQUAL]
 			TYPE_OF(value2) <> TYPE_CHAR

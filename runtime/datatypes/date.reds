@@ -1003,18 +1003,12 @@ date: context [
 		t2: floor value2/time + 0.5
 		
 		eq?: all [d1 = d2 t1 = t2]
-		
-		switch op [
-			COMP_EQUAL
-			COMP_FIND
-			COMP_SAME
-			COMP_NOT_EQUAL
-			COMP_STRICT_EQUAL [res: as-integer not eq?]
-			default [
-				either eq? [res: 0][
-					res: SIGN_COMPARE_RESULT(d1 d2)
-					if res = 0 [res: SIGN_COMPARE_RESULT(t1 t2)]
-				]
+
+		op: COMPARE_OP(op)
+		either op <= COMP_NOT_EQUAL [res: as-integer not eq?][
+			either eq? [res: 0][
+				res: SIGN_COMPARE_RESULT(d1 d2)
+				if res = 0 [res: SIGN_COMPARE_RESULT(t1 t2)]
 			]
 		]
 		res

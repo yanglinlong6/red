@@ -1036,27 +1036,14 @@ _function: context [
 		return:	[integer!]
 		/local
 			type  [integer!]
-			res	  [integer!]
 	][
 		#if debug? = yes [if verbose > 0 [print-line "function/compare"]]
 
 		type: TYPE_OF(arg2)
 		if type <> TYPE_FUNCTION [RETURN_COMPARE_OTHER]
-		switch op [
-			COMP_EQUAL
-			COMP_FIND
-			COMP_SAME
-			COMP_STRICT_EQUAL
-			COMP_NOT_EQUAL
-			COMP_SORT
-			COMP_CASE_SORT [
-				res: SIGN_COMPARE_RESULT((as-integer arg1/more) (as-integer arg2/more))
-			]
-			default [
-				res: -2
-			]
-		]
-		res
+		either COMPARE_OP(op) <= COMP_SORT [
+			SIGN_COMPARE_RESULT((as-integer arg1/more) (as-integer arg2/more))
+		][-2]
 	]
 
 	init: does [

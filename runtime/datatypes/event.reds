@@ -73,7 +73,7 @@ event: context [
 
 		type: TYPE_OF(arg2)
 		if type <> TYPE_EVENT [RETURN_COMPARE_OTHER]
-		switch op [
+		switch COMPARE_OP(op) [
 			COMP_EQUAL
 			COMP_FIND
 			COMP_SAME

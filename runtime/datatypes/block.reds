@@ -524,12 +524,15 @@ block: context [
 			n	   [integer!]
 			len	   [integer!]
 			same?  [logic!]
+			op2	   [integer!]
 	][
 		same?: all [
 			blk1/node = blk2/node
 			blk1/head = blk2/head
 		]
-		if op = COMP_SAME [return either same? [0][-1]]
+
+		op2: COMPARE_OP(op)
+		if op2 = COMP_SAME [return either same? [0][-1]]
 		if same? [return 0]
 		if cycles/find? blk1/node [
 			return either cycles/find? blk2/node [0][-1]
@@ -540,11 +543,10 @@ block: context [
 		size1: (as-integer s1/tail - s1/offset) >> 4 - blk1/head
 		size2: (as-integer s2/tail - s2/offset) >> 4 - blk2/head
 
-		if size1 <> size2 [										;-- shortcut exit for different sizes
-			if any [
-				op = COMP_STRICT_EQUAL_WORD op = COMP_EQUAL op = COMP_FIND op = COMP_STRICT_EQUAL op = COMP_NOT_EQUAL
-			][return 1]
-		]
+		if all [
+			size1 <> size2										;-- shortcut exit for different sizes
+			op2 <= COMP_NOT_EQUAL
+		][return 1]
 
 		if zero? size1 [return 0]								;-- shortcut exit for empty blocks
 
@@ -744,7 +746,7 @@ block: context [
 		
 		if TYPE_OF(blk2) <> TYPE_OF(blk1) [
 			unless all [
-				op = COMP_STRICT_EQUAL_WORD
+				COMPARE_OP(op) = COMP_STRICT_EQUAL_WORD
 				any [
 					all [TYPE_OF(blk1) = TYPE_PATH TYPE_OF(blk2) = TYPE_LIT_PATH]
 					all [TYPE_OF(blk2) = TYPE_PATH TYPE_OF(blk1) = TYPE_LIT_PATH]
@@ -899,7 +901,7 @@ block: context [
 		type: TYPE_OF(value)
 		if type = TYPE_OBJECT [hash?: no]				;-- use block search
 		any-blk?: either all [same? hash?][no][ANY_BLOCK_STRICT?(type)]
-		op: either case? [COMP_STRICT_EQUAL][COMP_FIND] ;-- warning: /case <> STRICT...
+		op: either case? [COMP_STRICT_EQUAL or COMP_CASE][COMP_FIND] ;-- warning: /case <> STRICT...
 		if same? [op: COMP_SAME]
 
 		either any [

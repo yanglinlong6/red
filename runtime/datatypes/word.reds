@@ -452,6 +452,7 @@ word: context [
 		][
 			RETURN_COMPARE_OTHER						;@@ replace by ANY_WORD? when available
 		]
+		op: COMPARE_OP(op)
 		switch op [
 			COMP_EQUAL
 			COMP_NOT_EQUAL

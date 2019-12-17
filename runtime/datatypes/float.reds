@@ -709,8 +709,9 @@ float: context [
 	][
 		#if debug? = yes [if verbose > 0 [print-line "float/compare"]]
 
+		op: COMPARE_OP(op)
 		if all [
-			any [op = COMP_FIND op = COMP_SAME op = COMP_STRICT_EQUAL]
+			op <= COMP_FIND
 			TYPE_OF(value1) <> TYPE_OF(value2)
 		][return 1]
 

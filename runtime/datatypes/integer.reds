@@ -477,8 +477,9 @@ integer: context [
 	][
 		#if debug? = yes [if verbose > 0 [print-line "integer/compare"]]
 
+		op: COMPARE_OP(op)
 		if all [
-			any [op = COMP_FIND op = COMP_STRICT_EQUAL]
+			op <= COMP_FIND
 			TYPE_OF(value2) <> TYPE_INTEGER
 		][return 1]
 		

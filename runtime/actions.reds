@@ -430,16 +430,13 @@ actions: context [
 		#if debug? = yes [if verbose > 0 [print-line "actions/compare"]]
 
 		action-compare: DISPATCH_COMPARE(value1)
-		
+
 		value: action-compare value1 value2 op
+
+		op: COMPARE_OP(op)
 		if all [
 			value = -2
-			op <> COMP_EQUAL
-			op <> COMP_SAME
-			op <> COMP_STRICT_EQUAL
-			op <> COMP_STRICT_EQUAL_WORD
-			op <> COMP_NOT_EQUAL
-			op <> COMP_FIND
+			op > COMP_SORT
 		][
 			fire [TO_ERROR(script invalid-compare) value1 value2]
 		]

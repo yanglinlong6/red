@@ -759,39 +759,33 @@ image: context [
 			arg1/node = arg2/node
 			arg1/head = arg2/head
 		]
+
+		op: COMPARE_OP(op)
 		if op = COMP_SAME [return either same? [0][-1]]
 		if all [
 			same?
-			any [op = COMP_EQUAL op = COMP_STRICT_EQUAL op = COMP_NOT_EQUAL]
+			op <= COMP_SORT
 		][return 0]
 
-		switch op [
-			COMP_EQUAL
-			COMP_FIND
-			COMP_STRICT_EQUAL
-			COMP_NOT_EQUAL
-			COMP_SORT
-			COMP_CASE_SORT [
-				either any [
-					arg1/size <> arg2/size
-					all [arg1/size = arg2/size arg1/head <> arg2/head]
-				][
-					res: 1
-				][
-					type: 0
-					bmp1: OS-image/lock-bitmap arg1 no
-					bmp2: OS-image/lock-bitmap arg2 no
-					res: compare-memory
-						as byte-ptr! OS-image/get-data bmp1 :type
-						as byte-ptr! OS-image/get-data bmp2 :type
-						IMAGE_WIDTH(arg1/size) * IMAGE_HEIGHT(arg2/size) * 4
-					OS-image/unlock-bitmap arg1 bmp1
-					OS-image/unlock-bitmap arg2 bmp2
-				]
+		either op <= COMP_SORT [
+			either any [
+				arg1/size <> arg2/size
+				all [arg1/size = arg2/size arg1/head <> arg2/head]
+			][
+				res: 1
+			][
+				type: 0
+				bmp1: OS-image/lock-bitmap arg1 no
+				bmp2: OS-image/lock-bitmap arg2 no
+				res: compare-memory
+					as byte-ptr! OS-image/get-data bmp1 :type
+					as byte-ptr! OS-image/get-data bmp2 :type
+					IMAGE_WIDTH(arg1/size) * IMAGE_HEIGHT(arg2/size) * 4
+				OS-image/unlock-bitmap arg1 bmp1
+				OS-image/unlock-bitmap arg2 bmp2
 			]
-			default [
-				res: -2
-			]
+		][
+			res: -2
 		]
 		res
 	]

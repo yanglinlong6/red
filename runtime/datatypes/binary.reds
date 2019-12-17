@@ -268,6 +268,7 @@ binary: context [
 			type	[integer!]
 			same?	[logic!]
 	][
+		op: COMPARE_OP(op)
 		type: TYPE_OF(bin2)
 		if all [
 			type <> TYPE_BINARY
@@ -281,7 +282,7 @@ binary: context [
 		if op = COMP_SAME [return either same? [0][-1]]
 		if all [
 			same?
-			any [op = COMP_EQUAL op = COMP_FIND op = COMP_STRICT_EQUAL op = COMP_NOT_EQUAL]
+			op <= COMP_NOT_EQUAL
 		][return 0]
 
 		s1: GET_BUFFER(bin1)
@@ -292,13 +293,11 @@ binary: context [
 
 		either match? [
 			if zero? len2 [
-				return as-integer all [op <> COMP_EQUAL op <> COMP_FIND op <> COMP_STRICT_EQUAL]
+				return as-integer (op > COMP_EQUAL)
 			]
 		][
 			either len1 <> len2 [							;-- shortcut exit for different sizes
-				if any [
-					op = COMP_EQUAL op = COMP_FIND op = COMP_STRICT_EQUAL op = COMP_NOT_EQUAL
-				][return 1]
+				if op <= COMP_NOT_EQUAL [return 1]
 
 				if len2 > len1 [
 					end: end - (len2 - len1)

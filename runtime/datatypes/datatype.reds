@@ -163,24 +163,12 @@ datatype: context [
 		arg2	  [red-datatype!]						;-- second operand
 		op	      [integer!]							;-- type of comparison
 		return:   [integer!]
-		/local
-			res	  [integer!]
 	][
 		#if debug? = yes [if verbose > 0 [print-line "datatype/compare"]]
 
-		switch op [
-			COMP_EQUAL
-			COMP_FIND
-			COMP_SAME
-			COMP_STRICT_EQUAL
-			COMP_NOT_EQUAL	  [
-				res: as-integer any [TYPE_OF(arg2) <> TYPE_DATATYPE arg1/value <> arg2/value]
-			]
-			default [
-				res: -2
-			]
-		]
-		res
+		either COMPARE_OP(op) <= COMP_SORT [
+			as-integer any [TYPE_OF(arg2) <> TYPE_DATATYPE arg1/value <> arg2/value]
+		][-2]
 	]
 	
 	init: does [

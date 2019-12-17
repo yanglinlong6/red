@@ -705,15 +705,19 @@ string: context [
 			lax?  [logic!]
 			same? [logic!]
 			sc	  [red-slice!]
+			case? [logic!]
 	][
 		same?: all [
 			str1/node = str2/node
 			str1/head = str2/head
 		]
+
+		case?: op and COMP_CASE = COMP_CASE			;-- case sensitive?
+		op: COMPARE_OP(op)
 		if op = COMP_SAME [return either same? [0][-1]]
 		if all [
 			same?
-			any [op = COMP_EQUAL op = COMP_FIND op = COMP_STRICT_EQUAL op = COMP_NOT_EQUAL]
+			op <= COMP_SORT
 		][return 0]
 
 		s1: GET_BUFFER(str1)
@@ -734,16 +738,12 @@ string: context [
 
 		either match? [
 			if zero? size2 [
-				return as-integer all [op <> COMP_EQUAL op = COMP_FIND op <> COMP_STRICT_EQUAL]
+				return as-integer (op > COMP_EQUAL)
 			]
 			if size2 > size1 [return 1]
 		][
 			either size1 <> size2 [							;-- shortcut exit for different sizes
-				if any [
-					op = COMP_EQUAL op = COMP_FIND op = COMP_STRICT_EQUAL op = COMP_NOT_EQUAL
-				][return 1]
-
-				if zero? size2 [return 1]					;-- edge case 1
+				if any [zero? size2 op <= COMP_NOT_EQUAL][return 1]
 
 				if size2 > size1 [
 					end: end - (size2 - size1 << (log-b unit2))

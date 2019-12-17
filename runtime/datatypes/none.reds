@@ -107,25 +107,12 @@ none: context [
 		return:   [integer!]
 		/local
 			type  [integer!]
-			res	  [integer!]
 	][
 		#if debug? = yes [if verbose > 0 [print-line "none/compare"]]
 
 		type: TYPE_OF(arg2)
 		if type <> TYPE_NONE [RETURN_COMPARE_OTHER]
-		switch op [
-			COMP_EQUAL
-			COMP_SAME
-			COMP_FIND
-			COMP_STRICT_EQUAL
-			COMP_NOT_EQUAL
-			COMP_SORT
-			COMP_CASE_SORT [res: 0]
-			default [
-				res: -2
-			]
-		]
-		res
+		either COMPARE_OP(op) <= COMP_SORT [0][-2]
 	]
 	
 	clear: func [

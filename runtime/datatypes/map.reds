@@ -373,13 +373,17 @@ map: context [
 			same?  [logic!]
 			case?  [logic!]
 			table2 [node!]
+			op2	   [integer!]
 	][
 		same?: all [
 			blk1/node = blk2/node
 			blk1/head = blk2/head
 		]
-		if op = COMP_SAME [return either same? [0][-1]]
-		if same? [return 0]
+
+		op2: COMPARE_OP(op)
+		either same? [return 0][
+			if op2 = COMP_SAME [return -1]
+		]
 		if cycles/find? blk1/node [
 			return either cycles/find? blk2/node [0][-1]
 		]
@@ -388,9 +392,7 @@ map: context [
 		size2: rs-length? blk2
 
 		if size1 <> size2 [										;-- shortcut exit for different sizes
-			return either any [
-				op = COMP_EQUAL op = COMP_FIND op = COMP_STRICT_EQUAL op = COMP_NOT_EQUAL
-			][1][SIGN_COMPARE_RESULT(size1 size2)]
+			return either op2 <= COMP_NOT_EQUAL [1][SIGN_COMPARE_RESULT(size1 size2)]
 		]
 
 		if zero? size1 [return 0]								;-- shortcut exit for empty map!
@@ -402,7 +404,7 @@ map: context [
 
 		cycles/push blk1/node
 		cycles/push blk2/node
-		either op = COMP_STRICT_EQUAL [
+		either op2 = COMP_STRICT_EQUAL [
 			until [
 				until [												;-- next key
 					key1: key1 + 2
@@ -457,7 +459,7 @@ map: context [
 
 		type: TYPE_OF(map2)
 		if type <> TYPE_MAP [RETURN_COMPARE_OTHER]
-		switch op [
+		switch COMPARE_OP(op) [
 			COMP_EQUAL
 			COMP_FIND
 			COMP_SAME

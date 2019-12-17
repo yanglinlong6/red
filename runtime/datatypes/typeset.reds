@@ -378,6 +378,7 @@ typeset: context [
 
 		type: TYPE_OF(set2)
 		if type <> TYPE_TYPESET [RETURN_COMPARE_OTHER]
+		op: COMPARE_OP(op)
 		switch op [
 			COMP_EQUAL
 			COMP_SAME
